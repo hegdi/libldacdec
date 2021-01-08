@@ -9,14 +9,14 @@ void InitBitReaderCxt(BitReaderCxt* br, const void * buffer)
 	br->Position = 0;
 }
 
-int32_t ReadInt(BitReaderCxt* br, const int bits)
+uint32_t ReadInt(BitReaderCxt* br, const int bits)
 {
-	const int value = PeekInt(br, bits);
+    const uint32_t value = PeekInt(br, bits);
 	br->Position += bits;
 	return value;
 }
 
-int ReadSignedInt(BitReaderCxt* br, const int bits)
+int32_t ReadSignedInt(BitReaderCxt* br, const int bits)
 {
 	const int value = PeekInt(br, bits);
 	br->Position += bits;
@@ -31,23 +31,23 @@ int ReadOffsetBinary(BitReaderCxt* br, const int bits)
 	return value;
 }
 
-int PeekInt(BitReaderCxt* br, const int bits)
+uint32_t PeekInt(BitReaderCxt* br, const int bits)
 {
-	const int byteIndex = br->Position / 8;
-	const int bitIndex = br->Position % 8;
-	const unsigned char* buffer = br->Buffer;
+	const unsigned int byteIndex = br->Position / 8;
+	const unsigned int bitIndex = br->Position % 8;
+	const uint8_t* buffer = br->Buffer;
 
 	if (bits <= 9)
 	{
-		int value = buffer[byteIndex] << 8 | buffer[byteIndex + 1];
-		value &= 0xFFFF >> bitIndex;
-		value >>= 16 - bits - bitIndex;
-		return value;
+		uint32_t value = buffer[byteIndex] << 8 | buffer[byteIndex + 1];
+        value &= 0xFFFF >> bitIndex;
+        value >>= 16 - bits - bitIndex;
+        return value;
 	}
 
 	if (bits <= 17)
 	{
-		int value = buffer[byteIndex] << 16 | buffer[byteIndex + 1] << 8 | buffer[byteIndex + 2];
+		uint32_t value = buffer[byteIndex] << 16 | buffer[byteIndex + 1] << 8 | buffer[byteIndex + 2];
 		value &= 0xFFFFFF >> bitIndex;
 		value >>= 24 - bits - bitIndex;
 		return value;
@@ -55,7 +55,7 @@ int PeekInt(BitReaderCxt* br, const int bits)
 
 	if (bits <= 25)
 	{
-		int value = buffer[byteIndex] << 24
+		uint32_t value = buffer[byteIndex] << 24
 			| buffer[byteIndex + 1] << 16
 			| buffer[byteIndex + 2] << 8
 			| buffer[byteIndex + 3];

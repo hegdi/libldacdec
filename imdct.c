@@ -1,16 +1,8 @@
 #include <math.h>
 #include <stdint.h>
-#include "imdct.h"
 
-static uint32_t BitReverse32(uint32_t value, int bitCount)
-{
-	value = ((value & 0xaaaaaaaa) >> 1) | ((value & 0x55555555) << 1);
-	value = ((value & 0xcccccccc) >> 2) | ((value & 0x33333333) << 2);
-	value = ((value & 0xf0f0f0f0) >> 4) | ((value & 0x0f0f0f0f) << 4);
-	value = ((value & 0xff00ff00) >> 8) | ((value & 0x00ff00ff) << 8);
-	value = (value >> 16) | (value << 16);
-	return value >> (32 - bitCount);
-}
+#include "ldacdec.h"
+#include "utility.h"
 
 double MdctWindow[3][256];
 double ImdctWindow[3][256];
@@ -66,15 +58,18 @@ static void GenerateImdctWindow(int frameSizePower)
 	}
 }
 
-void InitMdctTables(int frameSizePower)
+void InitMdct()
 {
 	for (int i = 0; i < 9; i++)
 	{
 		GenerateTrigTables(i);
 		GenerateShuffleTable(i);
-	}
-	GenerateMdctWindow(frameSizePower);
-	GenerateImdctWindow(frameSizePower);
+	}		
+    GenerateMdctWindow(7);
+    GenerateImdctWindow(7);
+
+    GenerateMdctWindow(8);
+	GenerateImdctWindow(8);
 }
 
 
@@ -84,19 +79,19 @@ void RunImdct(Mdct* mdct, float* input, float* output)
 {
 	const int size = 1 << mdct->Bits;
 	const int half = size / 2;
-	float dctOut[MAX_FRAME_SAMPLES];
+	float dctOut[MAX_FRAME_SAMPLES] = { 0.f };
 	const double* window = ImdctWindow[mdct->Bits - 6];
 	double* previous = mdct->ImdctPrevious;
 
-	Dct4(mdct, input, dctOut);
-
-	for (int i = 0; i < half; i++)
+    Dct4(mdct, input, dctOut);
+	
+    for (int i = 0; i < half; i++)
 	{
 		output[i] = window[i] * dctOut[i + half] + previous[i];
 		output[i + half] = window[i + half] * -dctOut[size - 1 - i] - previous[i + half];
 		previous[i] = window[size - 1 - i] * -dctOut[half - i - 1];
 		previous[i + half] = window[half - i - 1] * dctOut[i];
-	}
+    }
 }
 
 static void Dct4(Mdct* mdct, float* input, float* output)

@@ -1,7 +1,5 @@
 #pragma once
 
-#define MAX_FRAME_SAMPLES 256
-
 typedef struct {
 	int Bits;
 	int Size;
@@ -12,6 +10,6 @@ typedef struct {
 	double* CosTable;
 } Mdct;
 
-void InitMdctTables(int frameSizePower);
+void InitMdct();
 void RunImdct(Mdct* mdct, float* input, float* output);
 
