@@ -1,2 +1,5 @@
+ldacdec
+ldacenc
 *.o
 *.d
+*.so
