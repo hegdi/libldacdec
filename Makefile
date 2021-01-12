@@ -1,4 +1,5 @@
 CC = gcc
+
 CFLAGS = -MMD -MP -O2 -g
 CFLAGS += -Wall -Wextra
 CFLAGS += -Ilibldac/inc -Ilibldac/src
@@ -7,12 +8,12 @@ CFLAGS += -Ilibldac/inc -Ilibldac/src
 LDLIBS = -lm
 #LDFLAGS = -fsanitize=address
 VPATH += libldac/src/
-LDFLAGS = -L.
+LDFLAGS += -L.
 
 all: ldacdec ldacenc
 
-libldacdec.so: LDFLAGS += -shared -fPIC -Wl,-soname,libldacdec.so.1
-libldacdec.so: CFLAGS += -fPIC
+libldacdec.so: LDFLAGS += -shared -fpic -Wl,-soname,libldacdec.so.1
+libldacdec.so: CFLAGS += -fpic
 libldacdec.so: libldacdec.o bit_allocation.o huffCodes.o bit_reader.o utility.o imdct.o spectrum.o
 
 ldacenc: ldacenc.o ldaclib.o ldacBT.o

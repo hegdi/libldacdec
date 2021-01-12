@@ -149,9 +149,8 @@ static int decodeGradient( frame_t *this, BitReaderCxt *br )
                 this->gradientStartValue, this->gradientEndValue );
     } else
     {
-        assert( 0 ); // todo
         this->gradientStartUnit  = ReadInt( br, LDAC_GRADQU1BITS );
-        this->gradientEndUnit    = 31;
+        this->gradientEndUnit    = 26;
         this->gradientStartValue = ReadInt( br, LDAC_GRADOSBITS );
         this->gradientEndValue   = 31;
         LOG("gradient\n\tqu [%3d,%3d\n\tvalue [%3d,%3d]\n", 
