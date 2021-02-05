@@ -78,6 +78,7 @@ typedef struct {
 
 int ldacdecInit( ldacdec_t *this );
 int ldacDecode( ldacdec_t *this, uint8_t *stream, int16_t *pcm, int *bytesUsed );
+int ldacNullPacket( ldacdec_t *this, uint8_t *output, int *bytesUsed );
 int ldacdecGetSampleRate( ldacdec_t *this );
 int ldacdecGetChannelCount( ldacdec_t *this );
 

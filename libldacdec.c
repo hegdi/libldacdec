@@ -493,3 +493,28 @@ int ldacDecode( ldacdec_t *this, uint8_t *stream, int16_t *pcm, int *bytesUsed )
     return 0;
 }
 
+// for packet loss concealment
+static const int sa_null_data_size_ldac[2] = {
+    11, 15,
+};
+
+static const uint8_t saa_null_data_ldac[2][15] = {
+    {0x07, 0xa0, 0x16, 0x00, 0x20, 0xad, 0x51, 0x45, 0x14, 0x50, 0x49},
+    {0x07, 0xa0, 0x0a, 0x00, 0x20, 0xad, 0x51, 0x41, 0x24, 0x93, 0x00, 0x28, 0xa0, 0x92, 0x49},
+};
+
+int ldacNullPacket( ldacdec_t *this, uint8_t *output, int *bytesUsed )
+{
+    frame_t *frame = &this->frame;
+    uint8_t *ptr = output;
+
+    for( int block = 0; block<gaa_block_setting_ldac[frame->channelConfigId][1]; ++block )
+    {
+        const int channelType = gaa_block_setting_ldac[frame->channelConfigId][2];
+        const int size = sa_null_data_size_ldac[channelType];
+        memcpy( ptr, saa_null_data_ldac[channelType], size );
+        ptr += size;
+    }
+
+    *bytesUsed = frame->frameLength + 3;
+}

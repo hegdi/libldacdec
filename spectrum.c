@@ -75,14 +75,14 @@ static const int decode4DSpectrum[128] = {
     Quantization Tables
 ***************************************************************************************************/
 /* Inverse of Quantize Factor for Spectrum/Residual Quantization */
-static const float ga_iqf_ldac[LDAC_NIDWL] = {
+static const float QuantizerStepSize[16] = {
     2.0000000000000000e+00, 6.6666666666666663e-01, 2.8571428571428570e-01, 1.3333333333333333e-01,
     6.4516129032258063e-02, 3.1746031746031744e-02, 1.5748031496062992e-02, 7.8431372549019607e-03,
     3.9138943248532287e-03, 1.9550342130987292e-03, 9.7703957010258913e-04, 4.8840048840048840e-04,
     2.4417043096081065e-04, 1.2207776353537203e-04, 6.1037018951994385e-05, 3.0518043793392844e-05,
 };
 
-static const double QuantizerFineStepSize[16] =
+static const float QuantizerFineStepSize[16] =
 {
 	3.0518043793392844e-05, 1.0172681264464281e-05, 4.3597205419132631e-06, 2.0345362528928561e-06,
 	9.8445302559331759e-07, 4.8441339354591809e-07, 2.4029955742829012e-07, 1.1967860311134448e-07,
@@ -157,7 +157,7 @@ static void dequantizeQuantUnit( channel_t* this, int band )
 {
     const int subBandIndex = ga_isp_ldac[band];
     const int subBandCount = ga_nsps_ldac[band];
-    const float stepSize = ga_iqf_ldac[this->precisions[band]];
+    const float stepSize = QuantizerStepSize[this->precisions[band]];
     const float stepSizeFine = QuantizerFineStepSize[this->precisions[band]];
 
     for( int sb=0; sb<subBandCount; ++sb )
@@ -194,10 +194,6 @@ static const double spectrumScale[32] =
 	8.1920000000e+3, 1.6384000000e+4, 3.2768000000e+4, 6.5536000000e+4
 };
 
-static const float sa_val_ldac[LDAC_MAXNSPS] = {
-    0.f, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-};
-
 void scaleSpectrum(channel_t* this)
 {
     const frame_t *frame = this->frame;
@@ -214,13 +210,7 @@ void scaleSpectrum(channel_t* this)
 		   {
 		        spectra[sb] *= spectrumScale[this->scaleFactors[i]];
 		   }
-        } else
-        {
-            for( int sb = startSubBand; sb < endSubBand; sb++ )
-            {
-                spectra[sb] = sa_val_ldac[sb-startSubBand];
-            }
-        }
+        } 
 	}
 
     LOG_ARRAY_LEN( this->spectra, "%e, ", ga_isp_ldac[frame->quantizationUnitCount-1] + ga_nsps_ldac[frame->quantizationUnitCount-1] );
