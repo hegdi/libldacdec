@@ -5,6 +5,12 @@ this is an early stage, jet functional LDAC audio stream decoder.
 Shout-out to [@Thealexbarney](https://github.com/Thealexbarney) for the heavy lifting.
 LDAC is basically a stripped down, streaming only ATRAC9.
 
+#### Requirements
+
+```sh
+$ sudo apt install libsndfile1-dev libsamplerate0-dev
+```
+
 #### Build
 ```sh
 $ make
