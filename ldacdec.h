@@ -9,7 +9,7 @@
 
 #define container_of( ptr, type, member ) ({                \
         const typeof( ((type*)0)->member ) *__mptr = (ptr); \
-        (type *)((char*)__ptr - offsetof(type, memeber));   \
+        (type *)((char*)__ptr - offsetof(type, member));   \
         })
 
 #define min( a, b )             \

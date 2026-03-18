@@ -159,7 +159,7 @@ void do_ldac_resample(SNDFILE *in, SF_INFO *info, int new_sample_rate, FILE *out
         }
 		if ((error = src_process (src_state, &src_data)))
 		{	
-            printf ("src_process faild : %s\n", src_strerror (error)) ;
+            printf ("src_process failed : %s\n", src_strerror (error)) ;
 			break;
 		}
 
